@@ -214,7 +214,7 @@ class SwooleHandler
 		}
 		else if(isset($this->settings['timeout']))
 		{
-			unset($this->settings['timeout']);
+			$this->settings['timeout'] = -1;
 		}
 	}
 
