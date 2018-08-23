@@ -11,6 +11,8 @@
 
 Guzzle-Swoole 是 Guzzle 的处理器（Handler），并没有对 Guzzle 本身代码进行修改，理论上可以兼容后续版本。
 
+QQ群：17916227 [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "点击加群")](https://jq.qq.com/?_wv=1027&k=5wXf4Zq)
+
 ## 使用说明
 
 Composer:`"yurunsoft/guzzle-swoole":"~1.0"`
