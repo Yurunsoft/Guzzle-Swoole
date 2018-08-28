@@ -77,6 +77,11 @@ class SwooleHandler
 			{
 				$headers[$name] = implode(',', $value);
 			}
+			// 现有少部分服务端，接收 Content-Length 就会无法正确处理，疑似 Swoole Bug，在这临时解决
+			if(isset($headers['Content-Length']))
+			{
+				unset($headers['Content-Length']);
+			}
 			$this->client->setHeaders($headers);
 
 			// 其它处理
