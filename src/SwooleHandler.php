@@ -77,7 +77,7 @@ class SwooleHandler
 			{
 				$headers[$name] = implode(',', $value);
 			}
-			// 现有少部分服务端，接收 Content-Length 就会无法正确处理，疑似 Swoole Bug，在这临时解决
+			// 带有 Content-Length 时，少数奇葩服务器会无法顺利接收 post 数据
 			if(isset($headers['Content-Length']))
 			{
 				unset($headers['Content-Length']);
