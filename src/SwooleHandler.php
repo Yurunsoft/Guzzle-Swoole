@@ -38,8 +38,6 @@ class SwooleHandler
         $isLocation = false;
         $count = 0;
         do{
-            $ip = Coroutine::gethostbyname($uri->getHost());
-
             $port = $uri->getPort();
             if(null === $port)
             {
@@ -53,7 +51,7 @@ class SwooleHandler
                 }
             }
 
-            $this->client = new Client($ip, $port, 'https' === $uri->getScheme());
+            $this->client = new Client($uri->getHost(), $port, 'https' === $uri->getScheme());
 
             // method
             if($isLocation)
