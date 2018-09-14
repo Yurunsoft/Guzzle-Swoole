@@ -4,15 +4,30 @@
     "license": "MIT",
 	"description": "Guzzle Swoole Handler",
     "require": {
-        
+        "composer-plugin-api": "^1.0",
+        "funkjedi/composer-include-files": "^1.0"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "~2.0",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "composer/composer": "~1.0"
     },
     "autoload": {
         "psr-4" : {
-			"Yurun\\Util\\Swoole\\Guzzle\\" : "src/"
+            "Yurun\\Util\\Swoole\\Guzzle\\": "src/",
+            "GuzzleHttp\\": "src/GuzzleHttp/"
 		}
+    },
+    "extra": {
+        "class": "Yurun\\Util\\Swoole\\Guzzle\\Plugin\\Plugin",
+        "include_files": [
+            "src/load.php",
+            "src/functions.php"
+        ]
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Yurun\\Util\\Swoole\\Guzzle\\Plugin\\Plugin::dev"
+        ]
     }
 }
