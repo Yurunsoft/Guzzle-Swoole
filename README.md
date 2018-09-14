@@ -17,7 +17,31 @@ QQ群：17916227 [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "
 
 Composer:`"yurunsoft/guzzle-swoole":"~1.0"`
 
-使用时，请自行引入 Guzzle ！
+本项目不包含 Guzzle 功能，请自行在项目中引用 Guzzle 6.x，理论上可以支持升级 Guzzle 版本而无需更新 Guzzle-Swoole！
+
+### 全局设定处理器
+
+```php
+<?php
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use GuzzleHttp\Client;
+use Yurun\Util\Swoole\Guzzle\SwooleHandler;
+use GuzzleHttp\DefaultHandler;
+
+DefaultHandler::setDefaultHandler(SwooleHandler::class);
+
+go(function(){
+    $client = new Client();
+    $response = $client->request('GET', 'http://www.baidu.com', [
+        'verify'    =>  false,
+    ]);
+    var_dump($response->getStatusCode());
+});
+
+```
+
+### 手动指定 Swoole 处理器
 
 ```php
 use GuzzleHttp\Client;
