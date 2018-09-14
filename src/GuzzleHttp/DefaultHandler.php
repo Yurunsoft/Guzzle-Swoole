@@ -4,8 +4,8 @@ namespace GuzzleHttp;
 abstract class DefaultHandler
 {
     /** @var string|callable|null */
-	private static $defaultHandler;
-	
+    private static $defaultHandler;
+    
     /**
      * Set a default handler
      *
