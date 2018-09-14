@@ -1,6 +1,6 @@
 {
 	"name": "yurunsoft/guzzle-swoole",
-	"type": "library",
+	"type": "composer-plugin",
     "license": "MIT",
 	"description": "Guzzle Swoole Handler",
     "require": {
