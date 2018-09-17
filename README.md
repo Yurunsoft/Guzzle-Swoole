@@ -15,7 +15,7 @@ QQ群：17916227 [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "
 
 ## 使用说明
 
-Composer:`"yurunsoft/guzzle-swoole":"~1.0"`
+Composer:`"yurunsoft/guzzle-swoole":"~1.1"`
 
 本项目不包含 Guzzle 功能，请自行在项目中引用 Guzzle 6.x，理论上可以支持升级 Guzzle 版本而无需更新 Guzzle-Swoole！
 
