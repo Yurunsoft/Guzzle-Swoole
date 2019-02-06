@@ -223,7 +223,12 @@ class SwooleHandler
 
     private function getResponse()
     {
-        $response = new \GuzzleHttp\Psr7\Response($this->client->statusCode, isset($this->client->headers) ? $this->client->headers : [], $this->client->body);
+        $headers = isset($this->client->headers) ? $this->client->headers : [];
+        if(isset($headers['set-cookie']))
+        {
+            $headers['set-cookie'] = $this->client->set_cookie_headers;
+        }
+        $response = new \GuzzleHttp\Psr7\Response($this->client->statusCode, $headers, $this->client->body);
         return $response;
     }
 }
