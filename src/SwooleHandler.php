@@ -114,7 +114,27 @@ class SwooleHandler
             if((301 === $statusCode || 302 === $statusCode) && $options[RequestOptions::ALLOW_REDIRECTS] && ++$count <= $options[RequestOptions::ALLOW_REDIRECTS]['max'])
             {
                 // 自己实现重定向
-                $uri = new Uri($response->getHeaderLine('location'));
+                $location = $response->getHeaderLine('location');
+                $locationUri = new Uri($location);
+                if('' === $locationUri->getHost())
+                {
+                    if(!isset($location[0]))
+                    {
+                        return;
+                    }
+                    if('/' === $location[0])
+                    {
+                        $uri = $uri->withQuery('')->withPath($location);
+                    }
+                    else
+                    {
+                        $uri = new Uri(dirname($uri) . '/' . $location);
+                    }
+                }
+                else
+                {
+                    $uri = $locationUri;
+                }
                 $isLocation = true;
             }
             else
