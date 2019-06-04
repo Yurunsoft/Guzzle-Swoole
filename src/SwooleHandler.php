@@ -1,7 +1,6 @@
 <?php
 namespace Yurun\Util\Swoole\Guzzle;
 
-use Swoole\Coroutine;
 use GuzzleHttp\RequestOptions;
 use Swoole\Coroutine\Http\Client;
 use Psr\Http\Message\RequestInterface;
@@ -185,6 +184,12 @@ class SwooleHandler
     private function parseProxy(RequestInterface $request, array $options)
     {
         $proxy = isset($options['proxy']) ? $options['proxy'] : [];
+        if(is_string($proxy))
+        {
+            $proxy = [
+                'http' => $proxy,
+            ];
+        }
         if(isset($proxy['no']) && \GuzzleHttp\is_host_in_noproxy($request->getUri()->getHost(), $proxy['no']))
         {
             if(isset($this->settings['http_proxy_host']))
@@ -212,7 +217,7 @@ class SwooleHandler
         else
         {
             $username = $userinfo[0];
-            $password = null;
+            $password = '';
         }
         $this->settings['http_proxy_host'] = $proxyUri->getHost();
         $this->settings['http_proxy_port'] = $proxyUri->getPort();
