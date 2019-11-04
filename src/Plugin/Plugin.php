@@ -94,7 +94,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             if($this->stringEndwith($fileName, '/guzzlehttp/guzzle/src/functions_include.php'))
             {
                 $path = dirname($fileName) . '/functions.php';
-                include $path;
+                if(!function_exists('GuzzleHttp\choose_handler'))
+                {
+                    include $path;
+                }
                 $refFunction = new \ReflectionFunction('GuzzleHttp\choose_handler');
                 $content = file_get_contents($path);
                 $eol = $this->getEOL($content);
@@ -125,7 +128,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $vendorPath = $filesystem->normalizePath(realpath(realpath($config->get('vendor-dir'))));
 
         $generator->dumpFiles($this->composer, [
-            $vendorPath . "/yurunsoft/guzzle-swoole/src/load.php",
+            $vendorPath . "/yurunsoft/guzzle-swoole/src/load_include.php",
             $vendorPath . "/yurunsoft/guzzle-swoole/src/functions.php"
         ]);
     }

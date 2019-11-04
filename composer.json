@@ -21,7 +21,7 @@
     "extra": {
         "class": "Yurun\\Util\\Swoole\\Guzzle\\Plugin\\Plugin",
         "include_files": [
-            "src/load.php",
+            "src/load_include.php",
             "src/functions.php"
         ]
     },
