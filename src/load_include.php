@@ -1,5 +1,10 @@
 <?php
 if(!function_exists('GuzzleHttp\uri_template'))
 {
-    require_once __DIR__ . '/load.php';
+    $file = __DIR__ . '/load.php';
+    if(is_file($file))
+    {
+        require_once $file;
+    }
+    unset($file);
 }
