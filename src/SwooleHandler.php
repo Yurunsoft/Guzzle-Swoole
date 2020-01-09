@@ -35,113 +35,77 @@ class SwooleHandler
     {
         $uri = $request->getUri();
         $isLocation = false;
-        $count = 0;
-        do{
-            $port = $uri->getPort();
-            if(null === $port)
+        $port = $uri->getPort();
+        if(null === $port)
+        {
+            if('https' === $uri->getScheme())
             {
-                if('https' === $uri->getScheme())
-                {
-                    $port = 443;
-                }
-                else
-                {
-                    $port = 80;
-                }
-            }
-
-            $this->client = new Client($uri->getHost(), $port, 'https' === $uri->getScheme());
-
-            // method
-            if($isLocation)
-            {
-                $this->client->setMethod('GET');
+                $port = 443;
             }
             else
             {
-                $this->client->setMethod($request->getMethod());
+                $port = 80;
             }
+        }
 
-            // body
-            if(!$isLocation)
-            {
-                $this->client->setData((string)$request->getBody());
-            }
+        $this->client = new Client($uri->getHost(), $port, 'https' === $uri->getScheme());
 
-            // headers
-            $headers = [];
-            foreach($request->getHeaders() as $name => $value)
-            {
-                $headers[$name] = implode(',', $value);
-            }
-            // 带有 Content-Length 时，少数奇葩服务器会无法顺利接收 post 数据
-            if(isset($headers['Content-Length']))
-            {
-                unset($headers['Content-Length']);
-            }
-            $this->client->setHeaders($headers);
+        // method
+        if($isLocation)
+        {
+            $this->client->setMethod('GET');
+        }
+        else
+        {
+            $this->client->setMethod($request->getMethod());
+        }
 
-            // 其它处理
-            $this->parseSSL($request, $options);
-            $this->parseProxy($request, $options);
-            $this->parseNetwork($request, $options);
+        // body
+        if(!$isLocation)
+        {
+            $this->client->setData((string)$request->getBody());
+        }
 
-            // 设置客户端参数
-            if(!empty($this->settings))
-            {
-                $this->client->set($this->settings);
-            }
+        // headers
+        $headers = [];
+        foreach($request->getHeaders() as $name => $value)
+        {
+            $headers[$name] = implode(',', $value);
+        }
+        // 带有 Content-Length 时，少数奇葩服务器会无法顺利接收 post 数据
+        if(isset($headers['Content-Length']))
+        {
+            unset($headers['Content-Length']);
+        }
+        $this->client->setHeaders($headers);
 
-            // 发送
-            $path = $uri->getPath();
-            if('' === $path)
-            {
-                $path = '/';
-            }
-            $query = $uri->getQuery();
-            if('' !== $query)
-            {
-                $path .= '?' . $query;
-            }
+        // 其它处理
+        $this->parseSSL($request, $options);
+        $this->parseProxy($request, $options);
+        $this->parseNetwork($request, $options);
 
-            $this->client->execute($path);
+        // 设置客户端参数
+        if(!empty($this->settings))
+        {
+            $this->client->set($this->settings);
+        }
 
-            $response = $this->getResponse();
+        // 发送
+        $path = $uri->getPath();
+        if('' === $path)
+        {
+            $path = '/';
+        }
+        $query = $uri->getQuery();
+        if('' !== $query)
+        {
+            $path .= '?' . $query;
+        }
 
-            $statusCode = $response->getStatusCode();
+        $this->client->execute($path);
 
-            if((301 === $statusCode || 302 === $statusCode) && $options[RequestOptions::ALLOW_REDIRECTS] && ++$count <= $options[RequestOptions::ALLOW_REDIRECTS]['max'])
-            {
-                // 自己实现重定向
-                $location = $response->getHeaderLine('location');
-                $locationUri = new Uri($location);
-                if('' === $locationUri->getHost())
-                {
-                    if(!isset($location[0]))
-                    {
-                        return;
-                    }
-                    if('/' === $location[0])
-                    {
-                        $uri = $uri->withQuery('')->withPath($location);
-                    }
-                    else
-                    {
-                        $uri = new Uri(dirname($uri) . '/' . $location);
-                    }
-                }
-                else
-                {
-                    $uri = $locationUri;
-                }
-                $isLocation = true;
-            }
-            else
-            {
-                break;
-            }
+        $response = $this->getResponse();
 
-        } while(true);
         return new FulfilledPromise($response);
     }
 
@@ -253,6 +217,7 @@ class SwooleHandler
         {
             $headers['set-cookie'] = $this->client->set_cookie_headers;
         }
+        // var_dump($this->client);
         $response = new \GuzzleHttp\Psr7\Response($this->client->statusCode, $headers, $this->client->body);
         return $response;
     }
