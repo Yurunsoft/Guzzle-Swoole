@@ -10,12 +10,18 @@
     "require-dev": {
         "swoft/swoole-ide-helper": "~2.0",
         "guzzlehttp/guzzle": "~6.0",
-        "composer/composer": "~1.0"
+        "composer/composer": "~1.0",
+        "phpunit/phpunit": "^7"
     },
     "autoload": {
         "psr-4" : {
             "Yurun\\Util\\Swoole\\Guzzle\\": "src/",
             "GuzzleHttp\\": "src/GuzzleHttp/"
+		}
+    },
+    "autoload-dev": {
+        "psr-4" : {
+            "Yurun\\Util\\Swoole\\Guzzle\\Test\\": "tests/test/"
 		}
     },
     "extra": {
@@ -28,6 +34,7 @@
     "scripts": {
         "post-autoload-dump": [
             "Yurun\\Util\\Swoole\\Guzzle\\Plugin\\Plugin::dev"
-        ]
+        ],
+        "test": "./tests/run"
     }
 }
