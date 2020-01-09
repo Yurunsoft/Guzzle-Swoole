@@ -34,7 +34,6 @@ class SwooleHandler
     public function __invoke(RequestInterface $request, array $options)
     {
         $uri = $request->getUri();
-        $isLocation = false;
         $port = $uri->getPort();
         if(null === $port)
         {
@@ -51,20 +50,10 @@ class SwooleHandler
         $this->client = new Client($uri->getHost(), $port, 'https' === $uri->getScheme());
 
         // method
-        if($isLocation)
-        {
-            $this->client->setMethod('GET');
-        }
-        else
-        {
-            $this->client->setMethod($request->getMethod());
-        }
+        $this->client->setMethod($request->getMethod());
 
         // body
-        if(!$isLocation)
-        {
-            $this->client->setData((string)$request->getBody());
-        }
+        $this->client->setData((string)$request->getBody());
 
         // headers
         $headers = [];
