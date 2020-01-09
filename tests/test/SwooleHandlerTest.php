@@ -43,4 +43,30 @@ class SwooleHandlerTest extends BaseTest
         });
     }
 
+    public function testRedirect()
+    {
+        $this->go(function(){
+            $client = new Client();
+            $response = $client->request('GET', 'http://httpbin.org/redirect-to?url=http%3A%2F%2Fwww.baidu.com&status_code=302', [
+                'allow_redirects'   =>  false,
+            ]);
+            $this->assertEquals(302, $response->getStatusCode());
+            $this->assertEquals('http://www.baidu.com', $response->getHeaderLine('Location'));
+
+            $response = $client->request('GET', 'http://httpbin.org/redirect-to?url=http%3A%2F%2Fhttpbin.org%2Fget%3Fid%3D1&status_code=302');
+            $this->assertEquals(200, $response->getStatusCode());
+            $data = json_decode($response->getBody(), true);
+            $this->assertEquals([
+                'id'    =>  '1',
+            ], $data['args'] ?? null);
+
+            $this->expectException(\GuzzleHttp\Exception\TooManyRedirectsException::class);
+            $response = $client->request('GET', 'http://httpbin.org/redirect/3', [
+                'allow_redirects'   =>  [
+                    'max'   =>  1,
+                ],
+            ]);
+        });
+    }
+
 }
