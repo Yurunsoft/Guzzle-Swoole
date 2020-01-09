@@ -240,7 +240,7 @@ class SwooleHandler
         {
             $this->settings['timeout'] = $options['timeout'];
         }
-        else if(isset($this->settings['timeout']))
+        else
         {
             $this->settings['timeout'] = -1;
         }
