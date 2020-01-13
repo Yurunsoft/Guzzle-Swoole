@@ -164,7 +164,7 @@ class SwooleHandler
         $uri = new Uri($httpRequest->url);
         $transferStatus = [
             'url'                       =>  $httpRequest->url,
-            'content_type'              =>  $yurunResponse->getHeaderLine('content_type'),
+            'content_type'              =>  $yurunResponse->getHeaderLine('content-type'),
             'http_code'                 =>  $yurunResponse->getStatusCode(),
             'header_size'               =>  0,
             'request_size'              =>  0,
