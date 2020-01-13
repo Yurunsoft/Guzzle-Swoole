@@ -140,8 +140,16 @@ class SwooleHandler
         // request
         $method = $request['http_method'] ?? 'GET';
         $url = Core::url($request);
+        if(isset($request['client']['curl'][CURLOPT_PORT]))
+        {
+            $uri = new Uri($url);
+            $uri = $uri->withPort($request['client']['curl'][CURLOPT_PORT]);
+            $url = (string)$uri;
+        }
         $body = Core::body($request);
-        $yurunRequest = $httpRequest->buildRequest($url, $body, $method);
+        $httpRequest->url = $url;
+        $httpRequest->requestBody($body);
+        $yurunRequest = $httpRequest->buildRequest(null, null, $method);
         return YurunHttp::send($yurunRequest, Coroutine::getuid() > -1 ? \Yurun\Util\YurunHttp\Handler\Swoole::class : \Yurun\Util\YurunHttp\Handler\Curl::class);
     }
 
