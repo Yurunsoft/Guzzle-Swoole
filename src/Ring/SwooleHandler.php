@@ -33,7 +33,8 @@ class SwooleHandler
     {
         $httpRequest = new HttpRequest;
         $yurunResponse = $this->getYurunResponse($httpRequest, $request);
-        return $this->getResponse($httpRequest, $yurunResponse);
+        $response = $this->getResponse($httpRequest, $yurunResponse);
+        return new CompletedFutureArray($response);
     }
 
     /**
