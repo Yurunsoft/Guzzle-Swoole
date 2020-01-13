@@ -192,7 +192,12 @@ class SwooleHandler
         fwrite($body, (string)$yurunResponse->getBody());
         fseek($body, 0);
         $response = [
+            'curl' => [
+                'errno' => 0,
+                'error' => '',
+            ],
             'transfer_stats'    =>  $transferStatus,
+            'effective_url'     =>  $transferStatus['url'],
             'headers'           =>  $headers,
             'version'           =>  $version,
             'status'            =>  $status,
