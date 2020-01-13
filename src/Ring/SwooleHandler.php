@@ -188,8 +188,9 @@ class SwooleHandler
         $version = $yurunResponse->getProtocolVersion();
         $status = $yurunResponse->getStatusCode();
         $reason = $yurunResponse->getReasonPhrase();
-        $body = $yurunResponse->getBody();
-        $body->rewind();
+        $body = fopen('php://temp', 'r+');
+        fwrite($body, (string)$yurunResponse->getBody());
+        fseek($body, 0);
         $response = [
             'transfer_stats'    =>  $transferStatus,
             'headers'           =>  $headers,

@@ -16,7 +16,7 @@ class RingSwooleHandlerTest extends BaseTest
                     'host'  => ['httpbin.org'],
                 ],
             ]);
-            $data = json_decode($response['body'], true);
+            $data = json_decode(stream_get_contents($response['body']), true);
             $this->assertEquals(200, $response['transfer_stats']['http_code'] ?? null);
             $this->assertEquals([
                 'id'    =>  '1',
@@ -36,7 +36,7 @@ class RingSwooleHandlerTest extends BaseTest
                     'host'  => ['httpbin.org'],
                 ],
             ]);
-            $data = json_decode($response['body'], true);
+            $data = json_decode(stream_get_contents($response['body']), true);
             $this->assertEquals(200, $response['transfer_stats']['http_code'] ?? null);
             $this->assertEquals([
                 'id'    =>  '1',
@@ -56,7 +56,7 @@ class RingSwooleHandlerTest extends BaseTest
                     'host'  => ['httpbin.org'],
                 ],
             ]);
-            $data = json_decode($response['body'], true);
+            $data = json_decode(stream_get_contents($response['body']), true);
             $this->assertEquals(200, $response['transfer_stats']['http_code'] ?? null);
             $this->assertEquals('123', $data['freeform'] ?? null);
             $this->assertEquals('application/json', $data['Content-Type'] ?? null);
