@@ -4,6 +4,7 @@
     "license": "MIT",
 	"description": "Guzzle Swoole Handler",
     "require": {
+        "php": ">=7.1",
         "composer-plugin-api": "^1.0",
         "funkjedi/composer-include-files": "^1.0",
         "yurunsoft/yurun-http": "^3.4",
