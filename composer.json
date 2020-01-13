@@ -4,12 +4,15 @@
     "license": "MIT",
 	"description": "Guzzle Swoole Handler",
     "require": {
+        "php": ">=7.1",
         "composer-plugin-api": "^1.0",
-        "funkjedi/composer-include-files": "^1.0"
+        "funkjedi/composer-include-files": "^1.0",
+        "yurunsoft/yurun-http": "^3.4",
+        "guzzlehttp/guzzle": "~6.0",
+        "guzzlehttp/ringphp": "~1.0"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "~2.0",
-        "guzzlehttp/guzzle": "~6.0",
         "composer/composer": "~1.0",
         "phpunit/phpunit": "^7"
     },

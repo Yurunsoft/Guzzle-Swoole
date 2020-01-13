@@ -11,8 +11,7 @@
     <testsuites>
         <testsuite name="test">
             <directory>test</directory>
-            <file>DefaultHandlerHttpTest.php</file>
-            <file>*.php</file>
+            <file>test/DefaultHandlerHttpTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
