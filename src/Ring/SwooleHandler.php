@@ -139,14 +139,12 @@ class SwooleHandler
         // request
         $method = $request['http_method'] ?? 'GET';
         $url = Core::url($request);
-        var_dump($url);
         if(isset($request['client']['curl'][CURLOPT_PORT]))
         {
             $uri = new Uri($url);
             $uri = $uri->withPort($request['client']['curl'][CURLOPT_PORT]);
             $url = (string)$uri;
         }
-        var_dump($url);
         $body = Core::body($request);
         $httpRequest->url = $url;
         $httpRequest->requestBody((string)$body);
@@ -195,11 +193,6 @@ class SwooleHandler
         {
             $error = new RingException($yurunResponse->getError());
         }
-        $headers = [];
-        foreach($yurunResponse->getHeaders() as $name => $list)
-        {
-            $headers[$name] = implode(', ', $list);
-        }
         $version = $yurunResponse->getProtocolVersion();
         $status = $yurunResponse->getStatusCode();
         $reason = $yurunResponse->getReasonPhrase();
@@ -213,7 +206,7 @@ class SwooleHandler
             ],
             'transfer_stats'    =>  $transferStatus,
             'effective_url'     =>  $transferStatus['url'],
-            'headers'           =>  $headers,
+            'headers'           =>  $yurunResponse->getHeaders(),
             'version'           =>  $version,
             'status'            =>  $status,
             'reason'            =>  $reason,
