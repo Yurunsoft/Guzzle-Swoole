@@ -188,7 +188,8 @@ class SwooleHandler
         $version = $yurunResponse->getProtocolVersion();
         $status = $yurunResponse->getStatusCode();
         $reason = $yurunResponse->getReasonPhrase();
-        $body = (string)$yurunResponse->getBody();
+        $body = $yurunResponse->getBody();
+        $body->rewind();
         $response = [
             'transfer_stats'    =>  $transferStatus,
             'headers'           =>  $headers,
