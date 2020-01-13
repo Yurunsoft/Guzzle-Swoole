@@ -148,7 +148,7 @@ class SwooleHandler
         }
         $body = Core::body($request);
         $httpRequest->url = $url;
-        $httpRequest->requestBody($body);
+        $httpRequest->requestBody((string)$body);
         $yurunRequest = $httpRequest->buildRequest(null, null, $method);
         return YurunHttp::send($yurunRequest, Coroutine::getuid() > -1 ? \Yurun\Util\YurunHttp\Handler\Swoole::class : \Yurun\Util\YurunHttp\Handler\Curl::class);
     }
