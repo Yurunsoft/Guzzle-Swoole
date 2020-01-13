@@ -154,6 +154,7 @@ class SwooleHandler
      */
     protected function getResponse(HttpRequest $httpRequest, Response $yurunResponse)
     {
+        $uri = new Uri($httpRequest->url);
         $transferStatus = [
             'url'                       =>  $httpRequest->url,
             'content_type'              =>  $yurunResponse->getHeaderLine('content_type'),
@@ -175,6 +176,11 @@ class SwooleHandler
             'upload_content_length'     =>  0,
             'starttransfer_time'        =>  0,
             'redirect_time'             =>  0,
+            'certinfo'                  =>  '',
+            'primary_ip'                =>  $uri->getHost(),
+            'primary_port'              =>  Uri::getServerPort($uri),
+            'local_ip'                  =>  '127.0.0.1',
+            'local_port'                =>  12345,
         ];
         if(!$yurunResponse->success)
         {
