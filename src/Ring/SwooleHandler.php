@@ -122,7 +122,6 @@ class SwooleHandler
                     $httpRequest->keyPath = $value;
                     break;
                 case 'progress':
-    
                     break;
                 case 'debug':
                     break;
@@ -140,12 +139,14 @@ class SwooleHandler
         // request
         $method = $request['http_method'] ?? 'GET';
         $url = Core::url($request);
+        var_dump($url);
         if(isset($request['client']['curl'][CURLOPT_PORT]))
         {
             $uri = new Uri($url);
             $uri = $uri->withPort($request['client']['curl'][CURLOPT_PORT]);
             $url = (string)$uri;
         }
+        var_dump($url);
         $body = Core::body($request);
         $httpRequest->url = $url;
         $httpRequest->requestBody((string)$body);
