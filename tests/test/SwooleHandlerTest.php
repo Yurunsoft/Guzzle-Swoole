@@ -2,6 +2,7 @@
 namespace Yurun\Util\Swoole\Guzzle\Test;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 
 class SwooleHandlerTest extends BaseTest
 {
@@ -66,6 +67,15 @@ class SwooleHandlerTest extends BaseTest
                     'max'   =>  1,
                 ],
             ]);
+        });
+    }
+
+    public function testConnectException()
+    {
+        $this->go(function(){
+            $this->expectException(ConnectException::class);
+            $client = new Client();
+            $client->request('GET', 'http://127.0.0.256/');
         });
     }
 

@@ -4,8 +4,10 @@ namespace Yurun\Util\Swoole\Guzzle;
 use Yurun\Util\YurunHttp;
 use Yurun\Util\YurunHttp\Attributes;
 use Psr\Http\Message\RequestInterface;
+use GuzzleHttp\Promise\RejectedPromise;
 use Yurun\Util\YurunHttp\Http\Psr7\Uri;
 use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Exception\ConnectException;
 use PHPUnit\Framework\Constraint\Attribute;
 
 class SwooleHandler
@@ -95,8 +97,29 @@ class SwooleHandler
         }
         // 发送请求
         $yurunResponse = YurunHttp::send($yurunRequest, \Yurun\Util\YurunHttp\Handler\Swoole::class);
-        $response = $this->getResponse($yurunResponse);
-        return new FulfilledPromise($response);
+        if(($statusCode = $yurunResponse->getStatusCode()) < 0)
+        {
+            switch($statusCode)
+            {
+                case -1:
+                    $message = 'Connect failed';
+                    break;
+                case -2:
+                    $message = 'Request timeout';
+                    break;
+                case -3:
+                    $message = 'Server reset';
+                    break;
+                default:
+                    $message = 'Unknown';
+            }
+            return new RejectedPromise(new ConnectException(sprintf('Connect error %s: %s', $statusCode, $message), $request));
+        }
+        else
+        {
+            $response = $this->getResponse($yurunResponse);
+            return new FulfilledPromise($response);
+        }
     }
 
     /**
