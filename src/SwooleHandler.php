@@ -102,8 +102,7 @@ class SwooleHandler
             switch($statusCode)
             {
                 case -1:
-                    $message = 'Connect failed';
-                    break;
+                    return new RejectedPromise(new ConnectException(sprintf('Connect failed: errorCode: %s, errorMessage: %s', $yurunResponse->errno(), $yurunResponse->error()), $request));
                 case -2:
                     $message = 'Request timeout';
                     break;
@@ -113,7 +112,7 @@ class SwooleHandler
                 default:
                     $message = 'Unknown';
             }
-            return new RejectedPromise(new ConnectException(sprintf('Connect error %s: %s', $statusCode, $message), $request));
+            return new RejectedPromise(new ConnectException($message, $request));
         }
         else
         {
