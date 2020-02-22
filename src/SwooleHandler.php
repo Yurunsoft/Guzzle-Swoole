@@ -113,7 +113,7 @@ class SwooleHandler
             $this->settings['ssl_verify_peer'] = false;
         }
 
-        $cert = isset($options['cert']) ? $options['cert'] : [];
+        $cert = isset($options['cert']) ? (array)$options['cert'] : [];
         if(isset($cert[0]))
         {
             $this->settings['ssl_cert_file'] = $cert[0];
@@ -123,7 +123,7 @@ class SwooleHandler
             unset($this->settings['ssl_cert_file']);
         }
 
-        $key = isset($options['key']) ? $options['key'] : [];
+        $key = isset($options['key']) ? (array)$options['key'] : [];
         if(isset($key[0]))
         {
             $this->settings['ssl_key_file'] = $key[0];
