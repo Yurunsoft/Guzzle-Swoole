@@ -45,7 +45,7 @@ class SwooleHandler
             $yurunRequest = $yurunRequest->withHeader('Content-Type', '');
         }
         // 证书
-        $cert = isset($options['cert']) ? $options['cert'] : [];
+        $cert = isset($options['cert']) ? (array)$options['cert'] : [];
         if(isset($cert[0]))
         {
             $yurunRequest = $yurunRequest->withAttribute(Attributes::CERT_PATH, $cert[0]);
@@ -55,7 +55,7 @@ class SwooleHandler
             $yurunRequest = $yurunRequest->withAttribute(Attributes::CERT_PASSWORD, $cert[1]);
         }
         // ssl_key
-        $key = isset($options['ssl_key']) ? $options['ssl_key'] : [];
+        $key = isset($options['ssl_key']) ? (array)$options['ssl_key'] : [];
         if(isset($key[0]))
         {
             $yurunRequest = $yurunRequest->withAttribute(Attributes::KEY_PATH, $key[0]);
