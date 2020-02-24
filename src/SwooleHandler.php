@@ -29,9 +29,9 @@ class SwooleHandler
                                      // 禁止重定向
                                      ->withAttribute(Attributes::FOLLOW_LOCATION, false)
                                      // 超时
-                                     ->withAttribute(Attributes::TIMEOUT, $options['timeout'] ?? null)
+                                     ->withAttribute(Attributes::TIMEOUT, $options['timeout'] ?? -1)
                                      // 连接超时
-                                     ->withAttribute(Attributes::CONNECT_TIMEOUT, $options['connect_timeout'] ?? null);
+                                     ->withAttribute(Attributes::CONNECT_TIMEOUT, $options['connect_timeout'] ?? -1);
         // 用户名密码认证处理
         $auth = isset($options['auth']) ? $options['auth'] : [];
         if(isset($auth[1]))
