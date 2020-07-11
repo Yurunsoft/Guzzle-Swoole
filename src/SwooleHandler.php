@@ -3,6 +3,7 @@ namespace Yurun\Util\Swoole\Guzzle;
 
 use Yurun\Util\YurunHttp;
 use Yurun\Util\YurunHttp\Attributes;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\RequestInterface;
 use GuzzleHttp\Promise\RejectedPromise;
 use Yurun\Util\YurunHttp\Http\Psr7\Uri;
@@ -116,6 +117,10 @@ class SwooleHandler
         }
         else
         {
+            if(isset($options['sink']))
+            {
+                $this->parseSink($options['sink'], $yurunResponse);
+            }
             $response = $this->getResponse($yurunResponse);
             return new FulfilledPromise($response);
         }
@@ -136,6 +141,44 @@ class SwooleHandler
         }
         $response = new \GuzzleHttp\Psr7\Response($yurunResponse->getStatusCode(), $headers, $yurunResponse->getBody());
         return $response;
+    }
+
+    /**
+     * 处理 sink 选项
+     * 
+     * @see https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html#sink
+     *
+     * @param string|resource|\Psr\Http\Message\StreamInterface $sink
+     * @param \Yurun\Util\YurunHttp\Http\Response $yurunResponse
+     * @return void
+     */
+    private function parseSink($sink, &$yurunResponse)
+    {
+        if(is_string($sink))
+        {
+            $fp = fopen($sink, 'w');
+            if(false === $fp)
+            {
+                throw new \RuntimeException(sprintf('Open file %s failed', $sink));
+            }
+            try {
+                fwrite($fp, $yurunResponse->getBody()->__toString());
+            } finally {
+                fclose($fp);
+            }
+        }
+        else if(is_resource($sink))
+        {
+            fwrite($sink, $yurunResponse->getBody()->__toString());
+        }
+        else if($sink instanceof StreamInterface)
+        {
+            $sink->write($yurunResponse->getBody()->__toString());
+        }
+        else
+        {
+            throw new \RuntimeException('Option sink must be string or resource or \Psr\Http\Message\StreamInterface');
+        }
     }
 
 }

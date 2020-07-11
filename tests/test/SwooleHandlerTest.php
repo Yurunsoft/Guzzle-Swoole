@@ -3,6 +3,7 @@ namespace Yurun\Util\Swoole\Guzzle\Test;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use Yurun\Util\YurunHttp\Stream\MemoryStream;
 
 class SwooleHandlerTest extends BaseTest
 {
@@ -76,6 +77,51 @@ class SwooleHandlerTest extends BaseTest
             $this->expectException(ConnectException::class);
             $client = new Client();
             $client->request('GET', 'http://127.0.0.256/');
+        });
+    }
+
+    public function testOptionSink()
+    {
+        $this->go(function(){
+            $client = new Client();
+
+            // filename
+            $tempFile = tempnam(sys_get_temp_dir(), '');
+            $response = $client->request('GET', 'http://httpbin.org/get?id=1', [
+                'sink'  =>  $tempFile,
+            ]);
+            $this->assertTrue(is_file($tempFile));
+            $content = file_get_contents($tempFile);
+            unlink($tempFile);
+            $data = json_decode($content, true);
+            $this->assertEquals([
+                'id'    =>  '1',
+            ], $data['args'] ?? null);
+
+            // resource
+            $tempFile = tmpfile();
+            $response = $client->request('GET', 'http://httpbin.org/get?id=1', [
+                'sink'  =>  $tempFile,
+            ]);
+            fseek($tempFile, 0);
+            $content = fread($tempFile, $response->getBody()->getSize());
+            fclose($tempFile);
+            $data = json_decode($content, true);
+            $this->assertEquals([
+                'id'    =>  '1',
+            ], $data['args'] ?? null);
+
+            // stream
+            $stream = new MemoryStream;
+            $response = $client->request('GET', 'http://httpbin.org/get?id=1', [
+                'sink'  =>  $stream,
+            ]);
+            $content = $stream->__toString();
+            $data = json_decode($content, true);
+            $this->assertEquals([
+                'id'    =>  '1',
+            ], $data['args'] ?? null);
+            $stream->close();
         });
     }
 
