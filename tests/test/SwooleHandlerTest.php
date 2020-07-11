@@ -48,21 +48,21 @@ class SwooleHandlerTest extends BaseTest
     {
         $this->go(function(){
             $client = new Client();
-            $response = $client->request('GET', 'http://httpbin.org/redirect-to?url=http%3A%2F%2Fwww.baidu.com&status_code=302', [
+            $response = $client->request('GET', 'http://127.0.0.1:8899/?a=redirect302&status_code=302', [
                 'allow_redirects'   =>  false,
             ]);
             $this->assertEquals(302, $response->getStatusCode());
-            $this->assertEquals('http://www.baidu.com', $response->getHeaderLine('Location'));
+            $this->assertEquals('/?a=info', $response->getHeaderLine('Location'));
 
-            $response = $client->request('GET', 'http://httpbin.org/redirect-to?url=http%3A%2F%2Fhttpbin.org%2Fget%3Fid%3D1&status_code=302');
-            $this->assertEquals(200, $response->getStatusCode());
+            $response = $client->request('GET', 'http://127.0.0.1:8899/?a=redirect302&status_code=302');
             $data = json_decode($response->getBody(), true);
+            $this->assertEquals(200, $response->getStatusCode());
             $this->assertEquals([
-                'id'    =>  '1',
-            ], $data['args'] ?? null);
+                'a' =>  'info',
+            ], $data['get'] ?? null);
 
             $this->expectException(\GuzzleHttp\Exception\TooManyRedirectsException::class);
-            $response = $client->request('GET', 'http://httpbin.org/redirect/3', [
+            $response = $client->request('GET', 'http://127.0.0.1:8899/?a=redirect&count=3', [
                 'allow_redirects'   =>  [
                     'max'   =>  1,
                 ],
