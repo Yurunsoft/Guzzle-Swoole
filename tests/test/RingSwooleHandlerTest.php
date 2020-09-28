@@ -63,4 +63,29 @@ class RingSwooleHandlerTest extends BaseTest
         });
     }
 
+    public function testUserPwd()
+    {
+        $this->go(function(){
+            $handler = new SwooleHandler;
+            $response = $handler([
+                'http_method' => 'GET',
+                'uri' => '/basic-auth/aaa/bbb',
+                'headers' => [
+                    'host'  => ['httpbin.org'],
+                ],
+                'client' => [
+                    'curl' => [
+                        CURLOPT_USERPWD => 'aaa:bbb',
+                    ],
+                ],
+            ]);
+            $data = json_decode(stream_get_contents($response['body']), true);
+            $this->assertEquals(200, $response['transfer_stats']['http_code'] ?? null);
+            $this->assertEquals([
+                'authenticated' => true,
+                'user'          => 'aaa',
+            ], $data);
+        });
+    }
+
 }

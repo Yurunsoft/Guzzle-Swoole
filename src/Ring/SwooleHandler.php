@@ -145,6 +145,10 @@ class SwooleHandler
             $uri = $uri->withPort($request['client']['curl'][CURLOPT_PORT]);
             $url = (string)$uri;
         }
+        if(isset($request['client']['curl'][CURLOPT_USERPWD]))
+        {
+            $httpRequest->userPwd(...explode(':', $request['client']['curl'][CURLOPT_USERPWD], 2));
+        }
         $body = Core::body($request);
         $httpRequest->url = $url;
         $httpRequest->requestBody((string)$body);
