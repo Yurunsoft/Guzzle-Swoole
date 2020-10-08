@@ -26,7 +26,7 @@ class SwooleHandler
         $yurunRequest = new \Yurun\Util\YurunHttp\Http\Request($request->getUri(), $request->getHeaders(), (string)$request->getBody(), $request->getMethod(), $request->getProtocolVersion());
         $yurunRequest = $yurunRequest->withoutHeader('Content-Length')
                                      // 是否验证 CA
-                                     ->withAttribute(Attributes::IS_VERIFY_CA, $options['verify'])
+                                     ->withAttribute(Attributes::IS_VERIFY_CA, ($options['verify'] ?? false))
                                      // 禁止重定向
                                      ->withAttribute(Attributes::FOLLOW_LOCATION, false)
                                      // 超时
