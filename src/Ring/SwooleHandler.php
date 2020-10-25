@@ -47,7 +47,7 @@ class SwooleHandler
      *
      * @return \Yurun\Util\YurunHttp\Http\Response
      */
-    protected function getYurunResponse(HttpRequest $httpRequest, array $request)
+    protected function getYurunResponse(HttpRequest $httpRequest, array $request): Response
     {
         foreach ($request['client'] ?? [] as $key => $value)
         {
@@ -164,7 +164,7 @@ class SwooleHandler
      *
      * @return array
      */
-    protected function getResponse(HttpRequest $httpRequest, Response $yurunResponse)
+    protected function getResponse(HttpRequest $httpRequest, Response $yurunResponse): array
     {
         $uri = new Uri($httpRequest->url);
         $transferStatus = [

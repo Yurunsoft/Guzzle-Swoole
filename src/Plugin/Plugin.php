@@ -27,7 +27,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected $dev = false;
 
-    public function __construct($dev = false)
+    public function __construct(bool $dev = false)
     {
         $this->dev = $dev;
     }
@@ -80,7 +80,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         ];
     }
 
-    public function dumpFiles()
+    public function dumpFiles(): void
     {
         $this->parseGuzzle();
 
@@ -90,7 +90,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
     }
 
-    public static function dev(\Composer\Script\Event $event)
+    public static function dev(\Composer\Script\Event $event): void
     {
         $plugin = new static(true);
         $plugin->activate($event->getComposer(), $event->getIO());
@@ -102,7 +102,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      *
      * @return void
      */
-    protected function parseGuzzle()
+    protected function parseGuzzle(): void
     {
         $loadFilePath = \dirname(__DIR__) . '/load.php';
         $config = $this->composer->getConfig();
@@ -196,7 +196,7 @@ CODE
      *
      * @return void
      */
-    protected function appendIncludeFiles()
+    protected function appendIncludeFiles(): void
     {
         $generator = new \ComposerIncludeFiles\Composer\AutoloadGenerator($this->composer->getEventDispatcher(), $this->io);
 
@@ -217,9 +217,9 @@ CODE
      * @param string $string
      * @param string $compare
      *
-     * @return string
+     * @return bool
      */
-    protected function stringEndwith($string, $compare)
+    protected function stringEndwith(string $string, string $compare): bool
     {
         return substr($string, -\strlen($compare)) === $compare;
     }
@@ -231,7 +231,7 @@ CODE
      *
      * @return string
      */
-    protected function getEOL($content)
+    protected function getEOL(string $content): string
     {
         static $eols = [
             "\r\n",

@@ -16,8 +16,8 @@ class SwooleHandler
     /**
      * Sends an HTTP request.
      *
-     * @param RequestInterface $request Request to send.
-     * @param array            $options Request transfer options.
+     * @param RequestInterface $request request to send
+     * @param array            $options request transfer options
      *
      * @return PromiseInterface
      */
@@ -135,7 +135,7 @@ class SwooleHandler
      *
      * @return \GuzzleHttp\Psr7\Response
      */
-    private function getResponse($yurunResponse)
+    private function getResponse(\Yurun\Util\YurunHttp\Http\Response $yurunResponse): \GuzzleHttp\Psr7\Response
     {
         $headers = [];
         foreach ($yurunResponse->getHeaders() as $name => $str)
@@ -157,7 +157,7 @@ class SwooleHandler
      *
      * @return void
      */
-    private function parseSink($sink, &$yurunResponse)
+    private function parseSink($sink, \Yurun\Util\YurunHttp\Http\Response &$yurunResponse): void
     {
         if (\is_string($sink))
         {

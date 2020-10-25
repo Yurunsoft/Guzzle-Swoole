@@ -3,3 +3,4 @@
 /*.log
 /src/load.php
 /tests/server/Http/server.pid
+*.cache

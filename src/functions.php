@@ -13,11 +13,11 @@ namespace Yurun\Util\Swoole\Guzzle
      *
      * The returned handler is not wrapped by any default middlewares.
      *
-     * @throws \RuntimeException if no viable Handler is available.
+     * @throws \RuntimeException if no viable Handler is available
      *
-     * @return callable Returns the best handler for the given system.
+     * @return callable returns the best handler for the given system
      */
-    function choose_handler()
+    function choose_handler(): callable
     {
         $handler = null;
         $defaultHandler = DefaultHandler::getDefaultHandler();
@@ -66,11 +66,11 @@ namespace GuzzleHttp
          *
          * The returned handler is not wrapped by any default middlewares.
          *
-         * @throws \RuntimeException if no viable Handler is available.
+         * @throws \RuntimeException if no viable Handler is available
          *
-         * @return callable Returns the best handler for the given system.
+         * @return callable returns the best handler for the given system
          */
-        function choose_handler()
+        function choose_handler(): callable
         {
             return \Yurun\Util\Swoole\Guzzle\choose_handler();
         }

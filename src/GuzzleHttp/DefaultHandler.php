@@ -2,10 +2,16 @@
 
 namespace GuzzleHttp;
 
-abstract class DefaultHandler
+class DefaultHandler
 {
-    /** @var string|callable|null */
+    /**
+     * @var string|callable|null
+     */
     private static $defaultHandler;
+
+    private function __construct()
+    {
+    }
 
     /**
      * Set a default handler.
@@ -14,7 +20,7 @@ abstract class DefaultHandler
      *
      * @return void
      */
-    public static function setDefaultHandler($handler)
+    public static function setDefaultHandler($handler): void
     {
         static::$defaultHandler = $handler;
     }
