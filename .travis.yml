@@ -1,7 +1,8 @@
-sudo: required
 language: php
+os: linux
+dist: xenial
 
-matrix:
+jobs:
   include:
   - php: '7.1'
     env: SWOOLE_VERSION="v4.5.5"

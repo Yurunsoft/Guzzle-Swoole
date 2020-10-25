@@ -13,7 +13,7 @@ Guzzle-Swoole 是 Guzzle 的处理器（Handler），并没有对 Guzzle 本身�
 
 支持 Guzzle 6.x、7.x。
 
-支持 Ring Handler，可以用于 `elasticsearch/elasticsearch` 等包中。
+可以用于 `ElasticSearch`、`AWS` 等 SDK 当中。
 
 QQ群：17916227 [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "点击加群")](https://jq.qq.com/?_wv=1027&k=5wXf4Zq)
 
