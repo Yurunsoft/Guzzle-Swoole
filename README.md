@@ -19,7 +19,17 @@ QQ群：17916227 [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "
 
 ## 使用说明
 
+### 安装
+
 Composer:`"yurunsoft/guzzle-swoole":"~2.0"`
+
+`composer require yurunsoft/guzzle-swoole`
+
+由于一个依赖包尚未发布版本，为了兼容 Composer v2.x，请使用 Guzzle-Swoole >= v2.2 版本时，建议在`composer.json`中加入：
+
+```js
+"prefer-stable": true
+```
 
 ### 全局设定处理器
 
