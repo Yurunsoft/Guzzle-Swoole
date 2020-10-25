@@ -156,7 +156,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         return \Yurun\Util\Swoole\Guzzle\choose_handler();
     }
-CODE);
+CODE
+                );
                 $content = implode($eol, $contents);
                 file_put_contents($loadFilePath, $content);
                 break;
