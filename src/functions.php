@@ -1,13 +1,12 @@
 <?php
-namespace GuzzleHttp;
-
-use GuzzleHttp\Handler\Proxy;
-use GuzzleHttp\Handler\CurlHandler;
-use GuzzleHttp\Handler\StreamHandler;
-use GuzzleHttp\Handler\CurlMultiHandler;
-
-if(!function_exists('GuzzleHttp\choose_handler'))
+namespace Yurun\Util\Swoole\Guzzle
 {
+    use GuzzleHttp\Handler\Proxy;
+    use GuzzleHttp\Handler\CurlHandler;
+    use GuzzleHttp\Handler\StreamHandler;
+    use GuzzleHttp\Handler\CurlMultiHandler;
+    use GuzzleHttp\DefaultHandler;
+
     /**
      * Chooses and creates a default handler to use based on the environment.
      *
@@ -42,5 +41,24 @@ if(!function_exists('GuzzleHttp\choose_handler'))
         }
 
         return $handler;
+    }
+}
+
+namespace GuzzleHttp
+{
+    if(!function_exists('GuzzleHttp\choose_handler') && !method_exists('GuzzleHttp\Utils', 'chooseHandler'))
+    {
+        /**
+         * Chooses and creates a default handler to use based on the environment.
+         *
+         * The returned handler is not wrapped by any default middlewares.
+         *
+         * @throws \RuntimeException if no viable Handler is available.
+         * @return callable Returns the best handler for the given system.
+         */
+        function choose_handler()
+        {
+            return \Yurun\Util\Swoole\Guzzle\choose_handler();
+        }
     }
 }

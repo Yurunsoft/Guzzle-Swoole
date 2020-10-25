@@ -11,6 +11,8 @@
 
 Guzzle-Swoole 是 Guzzle 的处理器（Handler），并没有对 Guzzle 本身代码进行修改，理论上可以兼容后续版本。
 
+支持 Guzzle 6.x、7.x。
+
 支持 Ring Handler，可以用于 `elasticsearch/elasticsearch` 等包中。
 
 QQ群：17916227 [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "点击加群")](https://jq.qq.com/?_wv=1027&k=5wXf4Zq)

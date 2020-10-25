@@ -79,7 +79,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected function parseGuzzle()
     {
-        $filePath = dirname(__DIR__) . '/load.php';
+        $loadFilePath = dirname(__DIR__) . '/load.php';
         $config = $this->composer->getConfig();
 
         $filesystem = new Filesystem();
@@ -87,13 +87,45 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $vendorPath = $filesystem->normalizePath(realpath(realpath($config->get('vendor-dir'))));
         $autoloadFilesFile = $vendorPath.'/composer/autoload_files.php';
 
+        $lockData = $this->composer->getLocker()->getLockData();
+        if(!isset($lockData['packages']))
+        {
+            throw new \RuntimeException('Cannot found packages');
+        }
+        foreach($lockData['packages'] as $item)
+        {
+            if('guzzlehttp/guzzle' === $item['name'])
+            {
+                $guzzleVersion = $item['version'];
+                break;
+            }
+        }
+        if(!isset($guzzleVersion))
+        {
+            throw new \RuntimeException('Not found guzzlehttp/guzzle');
+        }
+
         $files = include $autoloadFilesFile;
-        
+
         foreach($files as $fileName)
         {
-            if($this->stringEndwith($fileName, '/guzzlehttp/guzzle/src/functions_include.php'))
+            if(preg_match('/^(.+guzzlehttp\/guzzle)\//', $fileName, $matches) > 0)
             {
-                $path = dirname($fileName) . '/functions.php';
+                $guzzlePath = $matches[1];
+                break;
+            }
+        }
+        if(!isset($guzzlePath))
+        {
+            throw new \RuntimeException('Not found guzzlehttp/guzzle path');
+        }
+
+        [$guzzleBigVersion] = explode('.', $guzzleVersion);
+
+        switch($guzzleBigVersion)
+        {
+            case '6':
+                $path = $guzzlePath . '/src/functions.php';
                 if(!function_exists('GuzzleHttp\choose_handler'))
                 {
                     include $path;
@@ -107,9 +139,29 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                     unset($contents[$i]);
                 }
                 $content = implode($eol, $contents);
-                file_put_contents($filePath, $content);
+                file_put_contents($loadFilePath, $content);
                 break;
-            }
+            case '7':
+                $path = $guzzlePath . '/src/Utils.php';
+                if(!method_exists('GuzzleHttp\Utils', 'chooseHandler'))
+                {
+                    include $path;
+                }
+                $refMethod = new \ReflectionMethod('GuzzleHttp\Utils', 'chooseHandler');
+                $content = file_get_contents($path);
+                $eol = $this->getEOL($content);
+                $contents = explode($eol, $content);
+                array_splice($contents, $refMethod->getStartLine() - 1, $refMethod->getEndLine() - $refMethod->getStartLine() + 1, <<<CODE
+    public static function chooseHandler(): callable
+    {
+        return \Yurun\Util\Swoole\Guzzle\choose_handler();
+    }
+CODE);
+                $content = implode($eol, $contents);
+                file_put_contents($loadFilePath, $content);
+                break;
+            default:
+                throw new \RuntimeException(sprintf('Unsupport guzzle version %s', $guzzleVersion));
         }
     }
 
