@@ -6,7 +6,7 @@
     "require": {
         "php": ">=7.1",
         "composer-plugin-api": "^1.0",
-        "funkjedi/composer-include-files": "^1.0",
+        "funkjedi/composer-include-files": "^1.0|dev-master",
         "yurunsoft/yurun-http": "^4.0",
         "guzzlehttp/guzzle": "~6.0|~7.0",
         "guzzlehttp/ringphp": "~1.0"
@@ -27,6 +27,7 @@
             "Yurun\\Util\\Swoole\\Guzzle\\Test\\": "tests/test/"
 		}
     },
+    "prefer-stable": true,
     "extra": {
         "class": "Yurun\\Util\\Swoole\\Guzzle\\Plugin\\Plugin",
         "include_files": [
