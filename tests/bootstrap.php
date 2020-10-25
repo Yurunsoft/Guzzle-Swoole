@@ -1,4 +1,5 @@
 <?php
+
 $loader = require dirname(__DIR__) . '/vendor/autoload.php';
 
 \Swoole\Runtime::enableCoroutine();
@@ -6,40 +7,41 @@ $loader = require dirname(__DIR__) . '/vendor/autoload.php';
 function testEnv($name, $default = null)
 {
     $result = getenv($name);
-    if(false === $result)
+    if (false === $result)
     {
         return $default;
     }
+
     return $result;
 }
 
 // Http Server
 $cmd = __DIR__ . '/server/Http/start-server.sh';
-echo 'Starting Http server...', PHP_EOL;
-echo `{$cmd}`, PHP_EOL;
+echo 'Starting Http server...', \PHP_EOL;
+echo `{$cmd}`, \PHP_EOL;
 $serverStarted = false;
-for($i = 0; $i < 10; ++$i)
+for ($i = 0; $i < 10; ++$i)
 {
-    if('YurunHttp' === @file_get_contents(testEnv('HTTP_SERVER_HOST', 'http://127.0.0.1:8899/')))
+    if ('YurunHttp' === @file_get_contents(testEnv('HTTP_SERVER_HOST', 'http://127.0.0.1:8899/')))
     {
         $serverStarted = true;
         break;
     }
     sleep(1);
 }
-if($serverStarted)
+if ($serverStarted)
 {
-    echo 'Http server started!', PHP_EOL;
+    echo 'Http server started!', \PHP_EOL;
 }
 else
 {
     throw new \RuntimeException('Http server start failed');
 }
 
-register_shutdown_function(function(){
+register_shutdown_function(function () {
     // stop server
     $cmd = __DIR__ . '/server/Http/stop-server.sh';
-    echo 'Stoping http server...', PHP_EOL;
-    echo `{$cmd}`, PHP_EOL;
-    echo 'Http Server stoped!', PHP_EOL;
+    echo 'Stoping http server...', \PHP_EOL;
+    echo `{$cmd}`, \PHP_EOL;
+    echo 'Http Server stoped!', \PHP_EOL;
 });

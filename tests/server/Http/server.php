@@ -1,21 +1,22 @@
 <?php
+
 $action = isset($_GET['a']) ? $_GET['a'] : null;
-switch($action)
+switch ($action)
 {
     case 'info':
         header('Content-Type: application/json');
         header('Yurun-Http: one suo');
         $files = $_FILES;
-        foreach($files as &$file)
+        foreach ($files as &$file)
         {
             $file['hash'] = md5(file_get_contents($file['tmp_name']));
         }
         echo json_encode([
-            'get'       =>  $_GET,
-            'post'      =>  $_POST,
-            'cookie'    =>  $_COOKIE,
-            'server'    =>  $_SERVER,
-            'files'     =>  $files,
+            'get'       => $_GET,
+            'post'      => $_POST,
+            'cookie'    => $_COOKIE,
+            'server'    => $_SERVER,
+            'files'     => $files,
         ]);
         break;
     case 'setCookie':
@@ -29,7 +30,7 @@ switch($action)
         break;
     case 'redirect':
         $count = $_GET['count'] ?? 0;
-        if($count > 0)
+        if ($count > 0)
         {
             header('HTTP/1.1 302 Found');
             header('Location:/?a=redirect&count=' . ($count - 1));
@@ -59,13 +60,13 @@ switch($action)
         header('Location:https://www.httpbin.org/get?id=1');
         exit;
     case 'download1':
-        if('nb' === (isset($_POST['yurunhttp']) ? $_POST['yurunhttp'] : null) && 'POST' === $_SERVER['REQUEST_METHOD'])
+        if ('nb' === (isset($_POST['yurunhttp']) ? $_POST['yurunhttp'] : null) && 'POST' === $_SERVER['REQUEST_METHOD'])
         {
             echo 'YurunHttp Hello World';
         }
         break;
     case 'download2':
-        if('nb' === (isset($_POST['yurunhttp']) ? $_POST['yurunhttp'] : null) && 'POST' === $_SERVER['REQUEST_METHOD'])
+        if ('nb' === (isset($_POST['yurunhttp']) ? $_POST['yurunhttp'] : null) && 'POST' === $_SERVER['REQUEST_METHOD'])
         {
             echo '<h1>YurunHttp Hello World</h1>';
         }

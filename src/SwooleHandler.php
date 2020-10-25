@@ -1,15 +1,15 @@
 <?php
+
 namespace Yurun\Util\Swoole\Guzzle;
 
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Promise\RejectedPromise;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Yurun\Util\YurunHttp;
 use Yurun\Util\YurunHttp\Attributes;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\RequestInterface;
-use GuzzleHttp\Promise\RejectedPromise;
 use Yurun\Util\YurunHttp\Http\Psr7\Uri;
-use GuzzleHttp\Promise\FulfilledPromise;
-use GuzzleHttp\Exception\ConnectException;
-use PHPUnit\Framework\Constraint\Attribute;
 
 class SwooleHandler
 {
@@ -23,7 +23,7 @@ class SwooleHandler
      */
     public function __invoke(RequestInterface $request, array $options)
     {
-        $yurunRequest = new \Yurun\Util\YurunHttp\Http\Request($request->getUri(), $request->getHeaders(), (string)$request->getBody(), $request->getMethod(), $request->getProtocolVersion());
+        $yurunRequest = new \Yurun\Util\YurunHttp\Http\Request($request->getUri(), $request->getHeaders(), (string) $request->getBody(), $request->getMethod(), $request->getProtocolVersion());
         $yurunRequest = $yurunRequest->withoutHeader('Content-Length')
                                      // 是否验证 CA
                                      ->withAttribute(Attributes::IS_VERIFY_CA, ($options['verify'] ?? false))
@@ -35,53 +35,53 @@ class SwooleHandler
                                      ->withAttribute(Attributes::CONNECT_TIMEOUT, ($options['connect_timeout'] ?? -1) * 1000);
         // 用户名密码认证处理
         $auth = isset($options['auth']) ? $options['auth'] : [];
-        if(isset($auth[1]))
+        if (isset($auth[1]))
         {
             list($username, $password) = $auth;
             $auth = base64_encode($username . ':' . $password);
             $yurunRequest = $yurunRequest->withAddedHeader('Authorization', 'Basic ' . $auth);
         }
-        if(!$yurunRequest->hasHeader('Content-Type'))
+        if (!$yurunRequest->hasHeader('Content-Type'))
         {
             $yurunRequest = $yurunRequest->withHeader('Content-Type', '');
         }
         // 证书
-        $cert = isset($options['cert']) ? (array)$options['cert'] : [];
-        if(isset($cert[0]))
+        $cert = isset($options['cert']) ? (array) $options['cert'] : [];
+        if (isset($cert[0]))
         {
             $yurunRequest = $yurunRequest->withAttribute(Attributes::CERT_PATH, $cert[0]);
         }
-        if(isset($cert[1]))
+        if (isset($cert[1]))
         {
             $yurunRequest = $yurunRequest->withAttribute(Attributes::CERT_PASSWORD, $cert[1]);
         }
         // ssl_key
-        $key = isset($options['ssl_key']) ? (array)$options['ssl_key'] : [];
-        if(isset($key[0]))
+        $key = isset($options['ssl_key']) ? (array) $options['ssl_key'] : [];
+        if (isset($key[0]))
         {
             $yurunRequest = $yurunRequest->withAttribute(Attributes::KEY_PATH, $key[0]);
         }
-        if(isset($key[1]))
+        if (isset($key[1]))
         {
             $yurunRequest = $yurunRequest->withAttribute(Attributes::KEY_PASSWORD, $key[1]);
         }
         // 代理
         $proxy = isset($options['proxy']) ? $options['proxy'] : [];
-        if(is_string($proxy))
+        if (\is_string($proxy))
         {
             $proxy = [
                 'http' => $proxy,
             ];
         }
-        if(!(isset($proxy['no']) && \GuzzleHttp\is_host_in_noproxy($request->getUri()->getHost(), $proxy['no'])))
+        if (!(isset($proxy['no']) && \GuzzleHttp\is_host_in_noproxy($request->getUri()->getHost(), $proxy['no'])))
         {
             $scheme = $request->getUri()->getScheme();
             $proxyUri = isset($proxy[$scheme]) ? $proxy[$scheme] : null;
-            if(null !== $proxyUri)
+            if (null !== $proxyUri)
             {
                 $proxyUri = new Uri($proxyUri);
                 $userinfo = explode(':', $proxyUri->getUserInfo());
-                if(isset($userinfo[1]))
+                if (isset($userinfo[1]))
                 {
                     list($username, $password) = $userinfo;
                 }
@@ -98,9 +98,9 @@ class SwooleHandler
         }
         // 发送请求
         $yurunResponse = YurunHttp::send($yurunRequest, \Yurun\Util\YurunHttp\Handler\Swoole::class);
-        if(($statusCode = $yurunResponse->getStatusCode()) < 0)
+        if (($statusCode = $yurunResponse->getStatusCode()) < 0)
         {
-            switch($statusCode)
+            switch ($statusCode)
             {
                 case -1:
                     return new RejectedPromise(new ConnectException(sprintf('Connect failed: errorCode: %s, errorMessage: %s', $yurunResponse->errno(), $yurunResponse->error()), $request));
@@ -113,65 +113,73 @@ class SwooleHandler
                 default:
                     $message = 'Unknown';
             }
+
             return new RejectedPromise(new ConnectException($message, $request));
         }
         else
         {
-            if(isset($options['sink']))
+            if (isset($options['sink']))
             {
                 $this->parseSink($options['sink'], $yurunResponse);
             }
             $response = $this->getResponse($yurunResponse);
+
             return new FulfilledPromise($response);
         }
     }
 
     /**
-     * 获取 Guzzle Response
+     * 获取 Guzzle Response.
      *
      * @param \Yurun\Util\YurunHttp\Http\Response $yurunResponse
+     *
      * @return \GuzzleHttp\Psr7\Response
      */
     private function getResponse($yurunResponse)
     {
         $headers = [];
-        foreach($yurunResponse->getHeaders() as $name => $str)
+        foreach ($yurunResponse->getHeaders() as $name => $str)
         {
             $headers[$name] = implode(', ', $str);
         }
         $response = new \GuzzleHttp\Psr7\Response($yurunResponse->getStatusCode(), $headers, $yurunResponse->getBody());
+
         return $response;
     }
 
     /**
-     * 处理 sink 选项
-     * 
+     * 处理 sink 选项.
+     *
      * @see https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html#sink
      *
      * @param string|resource|\Psr\Http\Message\StreamInterface $sink
-     * @param \Yurun\Util\YurunHttp\Http\Response $yurunResponse
+     * @param \Yurun\Util\YurunHttp\Http\Response               $yurunResponse
+     *
      * @return void
      */
     private function parseSink($sink, &$yurunResponse)
     {
-        if(is_string($sink))
+        if (\is_string($sink))
         {
             $fp = fopen($sink, 'w');
-            if(false === $fp)
+            if (false === $fp)
             {
                 throw new \RuntimeException(sprintf('Open file %s failed', $sink));
             }
-            try {
+            try
+            {
                 fwrite($fp, $yurunResponse->getBody()->__toString());
-            } finally {
+            }
+            finally
+            {
                 fclose($fp);
             }
         }
-        else if(is_resource($sink))
+        elseif (\is_resource($sink))
         {
             fwrite($sink, $yurunResponse->getBody()->__toString());
         }
-        else if($sink instanceof StreamInterface)
+        elseif ($sink instanceof StreamInterface)
         {
             $sink->write($yurunResponse->getBody()->__toString());
         }
@@ -180,5 +188,4 @@ class SwooleHandler
             throw new \RuntimeException('Option sink must be string or resource or \Psr\Http\Message\StreamInterface');
         }
     }
-
 }

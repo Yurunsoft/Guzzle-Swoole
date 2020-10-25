@@ -1,11 +1,12 @@
 <?php
+
 namespace Yurun\Util\Swoole\Guzzle\Plugin;
 
 use Composer\Composer;
-use Composer\IO\IOInterface;
-use Composer\Util\Filesystem;
-use Composer\Plugin\PluginInterface;
 use Composer\EventDispatcher\EventSubscriberInterface;
+use Composer\IO\IOInterface;
+use Composer\Plugin\PluginInterface;
+use Composer\Util\Filesystem;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -20,9 +21,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     protected $io;
 
     /**
-     * 是否为开发模式
+     * 是否为开发模式.
      *
-     * @var boolean
+     * @var bool
      */
     protected $dev = false;
 
@@ -32,7 +33,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * Apply plugin modifications to Composer
+     * Apply plugin modifications to Composer.
      *
      * @param Composer    $composer
      * @param IOInterface $io
@@ -44,7 +45,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * Remove any hooks from Composer
+     * Remove any hooks from Composer.
      *
      * This will be called when a plugin is deactivated before being
      * uninstalled, but also before it gets upgraded to a new version
@@ -55,11 +56,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function deactivate(Composer $composer, IOInterface $io)
     {
-
     }
 
     /**
-     * Prepare the plugin to be uninstalled
+     * Prepare the plugin to be uninstalled.
      *
      * This will be called after deactivate.
      *
@@ -68,7 +68,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function uninstall(Composer $composer, IOInterface $io)
     {
-
     }
 
     /**
@@ -76,16 +75,16 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'post-autoload-dump' => 'dumpFiles',
-        );
+        ];
     }
 
     public function dumpFiles()
     {
         $this->parseGuzzle();
 
-        if(!$this->dev)
+        if (!$this->dev)
         {
             $this->appendIncludeFiles();
         }
@@ -105,54 +104,54 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected function parseGuzzle()
     {
-        $loadFilePath = dirname(__DIR__) . '/load.php';
+        $loadFilePath = \dirname(__DIR__) . '/load.php';
         $config = $this->composer->getConfig();
 
         $filesystem = new Filesystem();
         $filesystem->ensureDirectoryExists($config->get('vendor-dir'));
         $vendorPath = $filesystem->normalizePath(realpath(realpath($config->get('vendor-dir'))));
-        $autoloadFilesFile = $vendorPath.'/composer/autoload_files.php';
+        $autoloadFilesFile = $vendorPath . '/composer/autoload_files.php';
 
         $lockData = $this->composer->getLocker()->getLockData();
-        if(!isset($lockData['packages']))
+        if (!isset($lockData['packages']))
         {
             throw new \RuntimeException('Cannot found packages');
         }
-        foreach($lockData['packages'] as $item)
+        foreach ($lockData['packages'] as $item)
         {
-            if('guzzlehttp/guzzle' === $item['name'])
+            if ('guzzlehttp/guzzle' === $item['name'])
             {
                 $guzzleVersion = $item['version'];
                 break;
             }
         }
-        if(!isset($guzzleVersion))
+        if (!isset($guzzleVersion))
         {
             throw new \RuntimeException('Not found guzzlehttp/guzzle');
         }
 
         $files = include $autoloadFilesFile;
 
-        foreach($files as $fileName)
+        foreach ($files as $fileName)
         {
-            if(preg_match('/^(.+guzzlehttp\/guzzle)\//', $fileName, $matches) > 0)
+            if (preg_match('/^(.+guzzlehttp\/guzzle)\//', $fileName, $matches) > 0)
             {
                 $guzzlePath = $matches[1];
                 break;
             }
         }
-        if(!isset($guzzlePath))
+        if (!isset($guzzlePath))
         {
             throw new \RuntimeException('Not found guzzlehttp/guzzle path');
         }
 
         [$guzzleBigVersion] = explode('.', $guzzleVersion);
 
-        switch($guzzleBigVersion)
+        switch ($guzzleBigVersion)
         {
             case '6':
                 $path = $guzzlePath . '/src/functions.php';
-                if(!function_exists('GuzzleHttp\choose_handler'))
+                if (!\function_exists('GuzzleHttp\choose_handler'))
                 {
                     include $path;
                 }
@@ -160,7 +159,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 $content = file_get_contents($path);
                 $eol = $this->getEOL($content);
                 $contents = explode($eol, $content);
-                for($i = $refFunction->getStartLine() - 1; $i < $refFunction->getEndLine(); ++$i)
+                for ($i = $refFunction->getStartLine() - 1; $i < $refFunction->getEndLine(); ++$i)
                 {
                     unset($contents[$i]);
                 }
@@ -169,7 +168,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 break;
             case '7':
                 $path = $guzzlePath . '/src/Utils.php';
-                if(!method_exists('GuzzleHttp\Utils', 'chooseHandler'))
+                if (!method_exists('GuzzleHttp\Utils', 'chooseHandler'))
                 {
                     include $path;
                 }
@@ -193,7 +192,7 @@ CODE
     }
 
     /**
-     * 追加 include 文件
+     * 追加 include 文件.
      *
      * @return void
      */
@@ -207,26 +206,29 @@ CODE
         $vendorPath = $filesystem->normalizePath(realpath(realpath($config->get('vendor-dir'))));
 
         $generator->dumpFiles($this->composer, [
-            $vendorPath . "/yurunsoft/guzzle-swoole/src/load_include.php",
-            $vendorPath . "/yurunsoft/guzzle-swoole/src/functions.php"
+            $vendorPath . '/yurunsoft/guzzle-swoole/src/load_include.php',
+            $vendorPath . '/yurunsoft/guzzle-swoole/src/functions.php',
         ]);
     }
-    
+
     /**
-     * 字符串是否以另一个字符串结尾
+     * 字符串是否以另一个字符串结尾.
+     *
      * @param string $string
      * @param string $compare
+     *
      * @return string
      */
     protected function stringEndwith($string, $compare)
     {
-        return substr($string, -strlen($compare)) === $compare;
+        return substr($string, -\strlen($compare)) === $compare;
     }
 
     /**
-     * 获取换行符
+     * 获取换行符.
      *
      * @param string $content
+     *
      * @return string
      */
     protected function getEOL($content)
@@ -236,13 +238,14 @@ CODE
             "\n",
             "\r",
         ];
-        foreach($eols as $eol)
+        foreach ($eols as $eol)
         {
-            if(strpos($content, $eol))
+            if (strpos($content, $eol))
             {
                 return $eol;
             }
         }
-        return PHP_EOL;
+
+        return \PHP_EOL;
     }
 }

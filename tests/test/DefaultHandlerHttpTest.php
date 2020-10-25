@@ -1,4 +1,5 @@
 <?php
+
 namespace Yurun\Util\Swoole\Guzzle\Test;
 
 use GuzzleHttp\DefaultHandler;
@@ -12,5 +13,4 @@ class DefaultHandlerHttpTest extends BaseTest
         DefaultHandler::setDefaultHandler(SwooleHandler::class);
         $this->assertEquals(SwooleHandler::class, DefaultHandler::getDefaultHandler());
     }
-
 }
