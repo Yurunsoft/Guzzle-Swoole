@@ -2,7 +2,7 @@
 <?php
 function testGuzzle(int $version): void
 {
-    echo 'test Guzzle ', $version, PHP_EOL;
+    echo 'test Guzzle ', $version, \PHP_EOL;
     $tplPath = __DIR__ . '/guzzle-test-tpl';
     $testPath = '/tmp/guzzle-' . $version . '-test';
     if (is_dir($testPath))
@@ -18,7 +18,7 @@ function testGuzzle(int $version): void
     file_put_contents($testPath . '/composer.json', $composerJsonContent);
     $phpunitXmlPath = __DIR__ . '/phpunit.xml';
     passthru("cd {$testPath} && composer update && php {$testPath}/phpunit -c {$phpunitXmlPath}", $returnVar);
-    if(0 !== $returnVar)
+    if (0 !== $returnVar)
     {
         exit($returnVar);
     }
@@ -56,7 +56,7 @@ function deleteDir(string $dir): bool
 }
 
 testGuzzle(6);
-if(version_compare(PHP_VERSION, '7.2.5', '>='))
+if (version_compare(\PHP_VERSION, '7.2.5', '>='))
 {
     testGuzzle(7);
 }
