@@ -1,32 +1,33 @@
 {
-	"name": "yurunsoft/guzzle-swoole",
-	"type": "composer-plugin",
+    "name": "yurunsoft/guzzle-swoole",
+    "type": "composer-plugin",
     "license": "MIT",
-	"description": "Guzzle Swoole Handler",
+    "description": "让 Guzzle 支持 Swoole 协程，可以用于 ElasticSearch、AWS 等 SDK 当中",
     "require": {
         "php": ">=7.1",
-        "composer-plugin-api": "^1.0",
-        "funkjedi/composer-include-files": "^1.0",
+        "composer-plugin-api": "^1.0|^2.0",
+        "yurunsoft/composer-include-files": "^1.0|^2.0",
         "yurunsoft/yurun-http": "^4.0",
-        "guzzlehttp/guzzle": "~6.0",
+        "guzzlehttp/guzzle": "~6.0|~7.0",
         "guzzlehttp/ringphp": "~1.0"
     },
     "require-dev": {
-        "swoft/swoole-ide-helper": "~2.0",
-        "composer/composer": "~1.0",
-        "phpunit/phpunit": "^7"
+        "swoole/ide-helper": "*",
+        "composer/composer": "^1.0|^2.0",
+        "phpunit/phpunit": ">=7"
     },
     "autoload": {
-        "psr-4" : {
+        "psr-4": {
             "Yurun\\Util\\Swoole\\Guzzle\\": "src/",
             "GuzzleHttp\\": "src/GuzzleHttp/"
-		}
+        }
     },
     "autoload-dev": {
-        "psr-4" : {
+        "psr-4": {
             "Yurun\\Util\\Swoole\\Guzzle\\Test\\": "tests/test/"
-		}
+        }
     },
+    "prefer-stable": true,
     "extra": {
         "class": "Yurun\\Util\\Swoole\\Guzzle\\Plugin\\Plugin",
         "include_files": [
@@ -38,6 +39,7 @@
         "post-autoload-dump": [
             "Yurun\\Util\\Swoole\\Guzzle\\Plugin\\Plugin::dev"
         ],
-        "test": "./tests/run"
+        "test": "./tests/run",
+        "test-guzzle": "./tests/test-guzzle"
     }
 }

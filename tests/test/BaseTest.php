@@ -1,4 +1,5 @@
 <?php
+
 namespace Yurun\Util\Swoole\Guzzle\Test;
 
 use PHPUnit\Framework\TestCase;
@@ -9,22 +10,25 @@ abstract class BaseTest extends TestCase
     protected function go($callable, $finally = null)
     {
         $throwable = null;
-        $cid = go(function() use($callable, &$throwable){
-            try {
+        $cid = go(function () use ($callable, &$throwable) {
+            try
+            {
                 $callable();
-            } catch(\Throwable $th) {
+            }
+            catch (\Throwable $th)
+            {
                 $throwable = $th;
             }
         });
-        while(Coroutine::exists($cid))
+        while (Coroutine::exists($cid))
         {
             usleep(10000);
         }
-        if($finally)
+        if ($finally)
         {
             $finally();
         }
-        if($throwable)
+        if ($throwable)
         {
             throw $throwable;
         }

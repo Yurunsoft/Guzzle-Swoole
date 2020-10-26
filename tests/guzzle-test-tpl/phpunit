@@ -3,7 +3,7 @@
 
 use Swoole\Event;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 ini_set('date.timezone', date_default_timezone_get());
 
 $statusCode = 0;

@@ -1,16 +1,17 @@
-sudo: required
 language: php
+os: linux
+dist: xenial
 
-matrix:
+jobs:
   include:
   - php: '7.1'
-    env: SWOOLE_VERSION="v4.5.4"
+    env: SWOOLE_VERSION="v4.5.5"
   - php: '7.2'
-    env: SWOOLE_VERSION="v4.5.4"
+    env: SWOOLE_VERSION="v4.5.5"
   - php: '7.3'
-    env: SWOOLE_VERSION="v4.5.4"
+    env: SWOOLE_VERSION="v4.5.5"
   - php: '7.4'
-    env: SWOOLE_VERSION="v4.5.4"
+    env: SWOOLE_VERSION="v4.5.5"
   - php: '7.1'
     env: SWOOLE_VERSION="v4.4.21"
   - php: '7.2'
@@ -54,3 +55,4 @@ before_script:
 
 script:
   - ./tests/run
+  - ./tests/test-guzzle
