@@ -39,6 +39,7 @@
         "post-autoload-dump": [
             "Yurun\\Util\\Swoole\\Guzzle\\Plugin\\Plugin::dev"
         ],
-        "test": "./tests/run"
+        "test": "./tests/run",
+        "test-guzzle": "./tests/test-guzzle"
     }
 }

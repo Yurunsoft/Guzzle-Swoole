@@ -54,4 +54,5 @@ before_script:
   - php --ri swoole
 
 script:
-  - ./tests/run
+  - composer test
+  - composer test-guzzle

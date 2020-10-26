@@ -1,0 +1,59 @@
+#!/usr/bin/env php
+<?php
+function testGuzzle(int $version): void
+{
+    echo 'test Guzzle ', $version, PHP_EOL;
+    $tplPath = __DIR__ . '/guzzle-test-tpl';
+    $testPath = '/tmp/guzzle-' . $version . '-test';
+    if (is_dir($testPath))
+    {
+        deleteDir($testPath);
+    }
+    mkdir($testPath, 0777, true);
+    copy($tplPath . '/phpunit', $testPath . '/phpunit');
+
+    $composerJsonContent = file_get_contents($tplPath . '/composer.json');
+    $composerJsonContent = str_replace('{guzzleVersion}', '~' . $version, $composerJsonContent);
+    $composerJsonContent = str_replace('{guzzleSwoolePath}', dirname(__DIR__), $composerJsonContent);
+    file_put_contents($testPath . '/composer.json', $composerJsonContent);
+    $phpunitXmlPath = __DIR__ . '/phpunit.xml';
+    passthru("cd {$testPath} && composer update && php ./phpunit -c {$phpunitXmlPath}", $returnVar);
+    if(0 !== $returnVar)
+    {
+        exit($returnVar);
+    }
+    deleteDir($testPath);
+}
+
+/**
+ * 递归删除目录及目录中所有文件.
+ *
+ * @param string $dir
+ *
+ * @return bool
+ */
+function deleteDir(string $dir): bool
+{
+    $dh = opendir($dir);
+    while ($file = readdir($dh))
+    {
+        if ('.' !== $file && '..' !== $file)
+        {
+            $fullpath = $dir . '/' . $file;
+            if (is_dir($fullpath) && !is_link($fullpath))
+            {
+                deleteDir($fullpath);
+            }
+            else
+            {
+                unlink($fullpath);
+            }
+        }
+    }
+    closedir($dh);
+
+    return rmdir($dir);
+}
+
+testGuzzle(6);
+testGuzzle(7);
