@@ -17,7 +17,7 @@ function testGuzzle(int $version): void
     $composerJsonContent = str_replace('{guzzleSwoolePath}', dirname(__DIR__), $composerJsonContent);
     file_put_contents($testPath . '/composer.json', $composerJsonContent);
     $phpunitXmlPath = __DIR__ . '/phpunit.xml';
-    passthru("cd {$testPath} && composer update && php ./phpunit -c {$phpunitXmlPath}", $returnVar);
+    passthru("cd {$testPath} && composer update && php {$testPath}/phpunit -c {$phpunitXmlPath}", $returnVar);
     if(0 !== $returnVar)
     {
         exit($returnVar);
