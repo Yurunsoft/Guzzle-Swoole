@@ -84,13 +84,33 @@ class SwooleHandler
                 if (isset($userinfo[1]))
                 {
                     list($username, $password) = $userinfo;
+                    if ('' === $password)
+                    {
+                        $password = null;
+                    }
                 }
                 else
                 {
-                    $username = $userinfo[0];
-                    $password = '';
+                    $username = '' === $userinfo[0] ? null : $userinfo[0];
+                    $password = null;
                 }
-                $yurunRequest = $yurunRequest->withAttribute(Attributes::PROXY_SERVER, $proxyUri->getHost())
+                switch ($options['curl'][\CURLOPT_PROXYTYPE] ?? \CURLPROXY_HTTP)
+                {
+                    case \CURLPROXY_HTTP:
+                    case \CURLPROXY_HTTP_1_0:
+                    case \CURLPROXY_HTTPS:
+                        $proxyScheme = 'http';
+                        break;
+                    case \CURLPROXY_SOCKS5:
+                    case \CURLPROXY_SOCKS5_HOSTNAME:
+                        $proxyScheme = 'socks5';
+                        break;
+                    default:
+                        throw new \RuntimeException('Guzzle-Swoole only supports HTTP and socks5 proxies');
+                }
+                $yurunRequest = $yurunRequest->withAttribute(Attributes::USE_PROXY, true)
+                                             ->withAttribute(Attributes::PROXY_TYPE, $proxyScheme)
+                                             ->withAttribute(Attributes::PROXY_SERVER, $proxyUri->getHost())
                                              ->withAttribute(Attributes::PROXY_PORT, $proxyUri->getPort())
                                              ->withAttribute(Attributes::PROXY_USERNAME, $username)
                                              ->withAttribute(Attributes::PROXY_PASSWORD, $password);
