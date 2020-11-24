@@ -51,4 +51,4 @@ jobs:
         ./.github/prepare-test.sh php
 
     - name: test
-      run: docker exec swoole composer test
+      run: docker exec php composer test
