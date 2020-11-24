@@ -1,0 +1,19 @@
+version: '3.4'
+services:
+  swoole:
+    container_name: "swoole"
+    build:
+      context: .
+      dockerfile: ./swoole.dockerfile
+      args:
+        SWOOLE_VERSION: ${SWOOLE_VERSION}
+        PHP_VERSION: ${PHP_VERSION}
+    depends_on:
+      - zookeeper
+    volumes:
+      - "${GITHUB_WORKSPACE}:/guzzle-swoole:rw"
+    working_dir: /guzzle-swoole
+    ulimits:
+      core: -1
+    privileged: true
+    command: tail -f /etc/group

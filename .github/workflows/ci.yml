@@ -1,0 +1,36 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        swoole: [
+          4.3.6-php7.1, 4.3.6-php7.2, 4.3.6-php7.3
+          , 4.4.22-php7.1, 4.4.22-php7.2, 4.4.22-php7.3, 4.4.22-php7.4
+          , 4.5.8-php7.1, 4.5.8-php7.2, 4.5.8-php7.3, 4.5.8-php7.4
+        ]
+
+    env:
+      SWOOLE_DOCKER_VERSION: ${{ matrix.swoole }}
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: start docker
+      run: |
+        cd .github
+        # swoole
+        docker-compose up -d swoole && docker exec swoole php -v && docker exec swoole php --ri swoole && docker exec swoole composer -V
+        docker ps -a && docker ps
+
+    - name: prepare
+      run: |
+        docker exec swoole composer update
+
+    - name: test
+      run: docker exec swoole composer test
