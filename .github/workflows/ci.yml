@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [7.1, 7.2, 7.3, 7.4, 8.0RC5]
-        swoole: master
+        swoole: [master]
 
     env:
       SWOOLE_DOCKER_VERSION: ${{ matrix.swoole }}
