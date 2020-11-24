@@ -7,8 +7,6 @@ services:
       dockerfile: ./swoole.dockerfile
       args:
         SWOOLE_DOCKER_VERSION: ${SWOOLE_DOCKER_VERSION}
-    depends_on:
-      - zookeeper
     volumes:
       - "${GITHUB_WORKSPACE}:/guzzle-swoole:rw"
     working_dir: /guzzle-swoole
