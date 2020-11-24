@@ -130,6 +130,9 @@ class SwooleHandler
                 case -3:
                     $message = 'Server reset';
                     break;
+                case -4:
+                    $message = 'Send failed';
+                    break;
                 default:
                     $message = 'Unknown';
             }
