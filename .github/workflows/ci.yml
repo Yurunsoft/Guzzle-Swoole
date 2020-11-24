@@ -21,16 +21,33 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: start docker
+    - name: prepare
       run: |
-        cd .github
-        # swoole
-        docker-compose up -d swoole && docker exec swoole php -v && docker exec swoole php --ri swoole && docker exec swoole composer -V
-        docker ps -a && docker ps
+        ./.github/prepare-test.sh swoole
+
+    - name: test
+      run: docker exec swoole composer test
+
+  ci-allow-failures:
+    runs-on: ubuntu-latest
+
+    continue-on-error: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [7.1, 7.2, 7.3, 7.4, 8.0RC5]
+        swoole: master
+
+    env:
+      SWOOLE_DOCKER_VERSION: ${{ matrix.swoole }}
+
+    steps:
+    - uses: actions/checkout@v1
 
     - name: prepare
       run: |
-        docker exec swoole composer update
+        ./.github/prepare-test.sh php
 
     - name: test
       run: docker exec swoole composer test
