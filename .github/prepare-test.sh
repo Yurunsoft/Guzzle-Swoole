@@ -4,7 +4,7 @@ __DIR__=$(cd `dirname $0`; pwd)
 
 cd $__DIR__
 
-containerName = $1
+containerName=$1
 
 if [[ "4.5.9-php8.0" = $SWOOLE_DOCKER_VERSION ]]; then
     containerName="php8"
