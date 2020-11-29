@@ -6,10 +6,6 @@ cd $__DIR__
 
 containerName=$1
 
-if [[ "4.5.9-php8.0" = $SWOOLE_DOCKER_VERSION ]]; then
-    containerName="php8"
-fi
-
 docker-compose up -d $containerName \
 && docker exec $containerName php -v \
 && docker exec $containerName php --ri swoole \
