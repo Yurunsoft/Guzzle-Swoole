@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         swoole: [
-          4.5.8-php7.1, 4.5.8-php7.2, 4.5.8-php7.3, 4.5.8-php7.4
+          4.5.9-php7.1, 4.5.9-php7.2, 4.5.9-php7.3, 4.5.9-php7.4, 4.5.9-php8.0
           ,4.4.22-php7.1, 4.4.22-php7.2, 4.4.22-php7.3, 4.4.22-php7.4
           ,4.3.6-php7.1, 4.3.6-php7.2, 4.3.6-php7.3
         ]
@@ -27,28 +27,3 @@ jobs:
 
     - name: test
       run: docker exec swoole composer test
-
-  ci-allow-failures:
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [7.1, 7.2, 7.3, 7.4, 8.0.0RC5]
-        swoole: [master]
-
-    env:
-      PHP_VERSION: ${{ matrix.php }}
-      SWOOLE_VERSION: ${{ matrix.swoole }}
-
-    steps:
-    - uses: actions/checkout@v1
-
-    - name: prepare
-      continue-on-error: true
-      run: |
-        ./.github/prepare-test.sh php
-
-    - name: test
-      continue-on-error: true
-      run: docker exec php composer test

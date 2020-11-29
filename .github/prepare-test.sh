@@ -4,9 +4,15 @@ __DIR__=$(cd `dirname $0`; pwd)
 
 cd $__DIR__
 
-docker-compose up -d $1 \
-&& docker exec $1 php -v \
-&& docker exec $1 php --ri swoole \
-&& docker exec $1 composer -V \
+containerName = $1
+
+if [[ "4.5.9-php8.0" = $SWOOLE_DOCKER_VERSION ]]; then
+    containerName="php8"
+fi
+
+docker-compose up -d $containerName \
+&& docker exec $containerName php -v \
+&& docker exec $containerName php --ri swoole \
+&& docker exec $containerName composer -V \
 && docker ps -a \
-&& docker exec $1 composer update
+&& docker exec $containerName composer update
