@@ -1,6 +1,18 @@
 <?php
 
-\Swoole\Runtime::enableCoroutine();
+if(defined('SWOOLE_HOOK_ALL'))
+{
+    $flags = SWOOLE_HOOK_ALL;
+    if(defined('SWOOLE_HOOK_NATIVE_CURL'))
+    {
+        $flags ^= SWOOLE_HOOK_NATIVE_CURL;
+    }
+}
+else
+{
+    $flags = true;
+}
+\Swoole\Runtime::enableCoroutine($flags);
 
 function testEnv($name, $default = null)
 {
