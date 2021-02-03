@@ -3,4 +3,4 @@
 /.gitattributes export-ignore
 /.gitignore export-ignore
 /.github export-ignore
-/test export-ignore
+/tests export-ignore
