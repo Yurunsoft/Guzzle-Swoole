@@ -77,7 +77,7 @@ class SwooleHandler
         {
             $scheme = $request->getUri()->getScheme();
             $proxyUri = isset($proxy[$scheme]) ? $proxy[$scheme] : null;
-            if (null !== $proxyUri)
+            if (null !== $proxyUri && '' !== $proxyUri)
             {
                 $proxyUri = new Uri($proxyUri);
                 $userinfo = explode(':', $proxyUri->getUserInfo());
@@ -111,7 +111,7 @@ class SwooleHandler
                 $yurunRequest = $yurunRequest->withAttribute(Attributes::USE_PROXY, true)
                                              ->withAttribute(Attributes::PROXY_TYPE, $proxyScheme)
                                              ->withAttribute(Attributes::PROXY_SERVER, $proxyUri->getHost())
-                                             ->withAttribute(Attributes::PROXY_PORT, $proxyUri->getPort())
+                                             ->withAttribute(Attributes::PROXY_PORT, Uri::getServerPort($proxyUri))
                                              ->withAttribute(Attributes::PROXY_USERNAME, $username)
                                              ->withAttribute(Attributes::PROXY_PASSWORD, $password);
             }

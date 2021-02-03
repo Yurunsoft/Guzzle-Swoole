@@ -91,7 +91,7 @@ class SwooleHandler
                             break;
                         }
                     }
-                    $httpRequest->proxy($uri->getHost(), $uri->getPort(), $uri->getScheme());
+                    $httpRequest->proxy($uri->getHost(), Uri::getServerPort($uri), $uri->getScheme());
                     break;
 
                 case 'cert':
